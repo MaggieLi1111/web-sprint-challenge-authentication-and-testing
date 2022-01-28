@@ -44,7 +44,7 @@ router.post('/register', checkCredentials, checkUsernameFree, (req, res, next) =
     .catch(next)
 });
 
-router.post('/login', checkCredentials, checkUsernameExists, (req, res, next) => {
+router.post('/login', checkCredentials, checkUsernameExists, async (req, res, next) => {
 
 
   /*
@@ -71,13 +71,19 @@ router.post('/login', checkCredentials, checkUsernameExists, (req, res, next) =>
       the response body should include a string exactly as follows: "invalid credentials".
   */
 
-  if(bcrypt.compareSync(req.body.password, req.user.password)) {
-    const token = tokenBuilder(req.user)
-    res.json({message:`welcome, ${req.user.username}`}, token)
-  } else {
-    next({status:401, message:"invalid credentials"})
-  }
+  try {
+    const { username, password } = req.body
+    const [user] = await User.findBy({ username: req.body.username })
 
+    if (bcrypt.compareSync(password, user.password)) {
+      const token = tokenBuilder(user)
+      res.json({ message: `welcome, ${user.username}`, token })
+    } else {
+      next({ status: 401, message: "invalid credentials" })
+    }
+  } catch (err) {
+    next(err)
+  }
 });
 
 
