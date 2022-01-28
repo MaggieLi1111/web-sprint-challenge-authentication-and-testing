@@ -56,7 +56,6 @@ Be prepared to demonstrate your understanding of this week's concepts by answeri
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
 Sessions are good for stateful authentication.
 JSON web tokens are good for stateless authentication.
-
 With sessions the server is responsible for keeping track of logged in users,
 and with JSON web tokens the client is responsible.
 
